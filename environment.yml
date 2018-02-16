@@ -1,0 +1,15 @@
+name: cvml
+channels:
+  - conda-forge
+dependencies:
+  - python=3.6
+  - pillow=5
+  - opencv=3
+  - pandas
+  - numpy
+  - matplotlib
+  - jupyter
+  - ipython
+  - pip:
+    - sklearn-pandas
+    - imbalanced-learn
