@@ -22,16 +22,16 @@ square_homo = [ square;
 % Step 1:
 % Define a 3-by-3 transformation matrix (A) that rotates the square by 45
 % degrees (counter-clockwise) around its center point (xc,yc).
-angle = 45;
-cv = cos(angle);
-sv = sin(angle);
 
+angle_radians = 45 * pi/180;
+cv = cos(angle_radians);
+sv = sin(angle_radians);
 
 % First, move the square to origin..
 t1 = [1   0  -xc; 
       0   1  -yc; 
       0   0   1];
-% Next, we rotate by 45 degrees
+% Next, rotate the square by 45 degrees
 t2 = [cv   -sv   0;
       sv   cv    0;
       0    0     1];
@@ -39,15 +39,15 @@ t2 = [cv   -sv   0;
 t3 = [1   0   xc; 
       0   1   yc; 
       0   0   1];
-A2 = t1 * t2;
+A2 = t1 * t2 * t3
 
 % Alternative solution
 xf = (1-cv)*xc + sv*yc;
 yf = -sv*xc + (1-cv)*yc;
 A = [cv  -sv   xf;
      sv   cv   yf;
-     0    0    1];
-A = A2;
+     0    0    1]
+%A = A2;
 
 
 square_homo_rotated = A*square_homo;
