@@ -23,7 +23,7 @@ square_homo = [ square;
 % Define a 3-by-3 transformation matrix (A) that rotates the square by 45
 % degrees (counter-clockwise) around its center point (xc,yc).
 
-angle_radians = 45 * pi/180;
+angle_radians = -45 * pi/180;
 cv = cos(angle_radians);
 sv = sin(angle_radians);
 

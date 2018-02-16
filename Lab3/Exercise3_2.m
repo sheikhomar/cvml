@@ -62,10 +62,26 @@ close(2)
 % 'iMin' of the smallest eigenvalue.
 
 % A = ???
+x1 = p(1,1); y1 = p(2,1); xp1 = p_prime(1,1); yp1 = p_prime(2,1);
+x2 = p(1,2); y2 = p(2,2); xp2 = p_prime(1,2); yp2 = p_prime(2,2);
+x3 = p(1,3); y3 = p(2,3); xp3 = p_prime(1,3); yp3 = p_prime(2,3);
+x4 = p(1,4); y4 = p(2,4); xp4 = p_prime(1,4); yp4 = p_prime(2,4);
 
+
+A = [x1 y1 1 0  0  0 -xp1*x1 -xp1*y1 -xp1;
+     0  0  0 x1 y1 1 -yp1*x1 -yp1*y1 -yp1;
+     x2 y2 1 0  0  0 -xp2*x2 -xp2*y2 -xp2;
+     0  0  0 x2 y2 1 -yp2*x2 -yp2*y2 -yp2;
+     x3 y3 1 0  0  0 -xp3*x3 -xp3*y3 -xp3;
+     0  0  0 x3 y3 1 -yp3*x3 -yp3*y3 -yp3;
+     x4 y4 1 0  0  0 -xp4*x4 -xp4*y4 -xp4;
+     0  0  0 x4 y4 1 -yp4*x4 -yp4*y4 -yp4];
+ 
 [E,V]=eig(A'*A);
 
 % iMin = ???
+[val, index] = min(V(V~=0))
+iMin = index;
 
 H=reshape(E(:,iMin),3,3)';
 
@@ -77,6 +93,10 @@ H=reshape(E(:,iMin),3,3)';
 % equals 1 for all points in p_prime.
 
 % p_prime_cart = ???
+p_prime_cart = H*p;
+for ii=1:size(p_prime_cart,2)
+    p_prime_cart(:,ii) = p_prime_cart(:,ii) / p_prime_cart(3,ii);
+end
 
 figure(2)
 plot(p_prime(1,[1:end 1]),p_prime(2,[1:end 1]),'r',...
