@@ -6,6 +6,7 @@ dependencies:
   - pillow=5
   - opencv=3
   - pandas
+  - seaborn
   - numpy
   - matplotlib
   - jupyter
