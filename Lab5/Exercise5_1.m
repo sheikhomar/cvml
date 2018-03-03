@@ -2,11 +2,11 @@ clear all; close all;
 
 addpath('MatlabSourceFiles');
 
-VLFEATROOT = 'vlfeat-0.9.20';
+VLFEATROOT = '/home/omar/code/cvml/Lab4/vlfeat-0.9.20';
 %run([VLFEATROOT '\toolbox\vl_setup.m']);
-addpath([VLFEATROOT,'\toolbox'])
+addpath([VLFEATROOT,'/toolbox'])
 vl_setup()
-MATLABFNSROOT = 'MatlabFns';
+MATLABFNSROOT = '/home/omar/code/cvml/Lab4/MatlabFns';
 addpath(genpath(MATLABFNSROOT))
 
 I1 = rgb2gray(imread('left.jpg')); % left image
