@@ -12,6 +12,7 @@ dependencies:
   - jupyter
   - ipython
   - jupyterlab
+  - jupyter_contrib_nbextensions
   - pip:
     - sklearn-pandas
     - imbalanced-learn
