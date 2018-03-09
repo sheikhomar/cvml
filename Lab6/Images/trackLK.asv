@@ -1,0 +1,95 @@
+function [Xpts, Ypts] = trackLK(PTHD, numfames);
+%PTHD = path to hotel directory
+root = pwd;
+fList = listFiles(PTHD);
+cd(root);
+[m n] = size(fList);
+r = ceil(sqrt(n)); %for use in debug (visual)
+
+for i=1:n
+    file = sprintf('%s\\hotel.seq%d.png',PTHD,i-1);
+    imgArr{i} = imread(file);
+%     figure(1)
+%     subplot(r,r,i), imshow(imgArr{i});
+end
+
+numPoints = 15;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Part 1                                    %
+% Show First Image w/ Interest Points       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure(1)                                   %          
+pts = findInterest(imgArr{1},10,numPoints); %
+hold off                                    %
+imshow(imgArr{1})                           %
+hold on                                     %
+scatter(pts(:,2),pts(:,1));                 %
+hold off                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+wsize = 5;
+Xpts = pts(:,2);
+Ypts = pts(:,1);
+
+count = 0;
+for i=1:n-1 %number of images to go through
+    img1 = double(imgArr{i});    
+    img2 = double(imgArr{i+1});
+    [dx dy] = gradient(img1);
+    for j=1:numPoints       %number of points to consider
+        x_center = Xpts(j,i);
+        y_center = Ypts(j,i);
+        [xrange, yrange] = meshgrid(x_center-wsize:x_center+wsize,y_center-wsize:y_center+wsize);
+        W1(1:2*wsize+1, 1:2*wsize+1) = img1(x_center-wsize:x_center+wsize,y_center-wsize:y_center+wsize);
+        W2(1:2*wsize+1, 1:2*wsize+1) = img2(x_center-wsize:x_center+wsize,y_center-wsize:y_center+wsize);
+        It = W1-W2;
+        dx1(1:2*wsize+1, 1:2*wsize+1) = dx(x_center-wsize:x_center+wsize,y_center-wsize:y_center+wsize);
+        dy1(1:2*wsize+1, 1:2*wsize+1) = dy(x_center-wsize:x_center+wsize,y_center-wsize:y_center+wsize);
+        I1x = dx1.^2;
+        I1y = dy1.^2;
+        I1xy = dx1.*dy1;
+        SigX1 = sum(sum(I1x));
+        SigY1 = sum(sum(I1y));
+        SigXY1 = sum(sum(I1xy));
+        SigXIT = sum(sum(dx1.*It));
+        SigYIT = sum(sum(dy1.*It));
+        
+%         I2x = dx2.^2;
+%         I2y = dy2.^2;
+%         I2xy = dx2.*dy1;
+%         SigX2 = sum(sum(I2x);
+%         SigY2 = sum(sum(I2y);
+%         SigXY2 = sum(sum(I2xy));
+        M = [SigX1 SigX1*SigY1;SigX1*SigY1 SigY1];
+        UVMat = -inv(M)*[SigXIT;SigYIT];
+        u(j,i) = UVMat(1);
+        v(j,i) = UVMat(2);
+        It_old = It;
+        old_xrange = xrange;
+        old_yrange = yrange;
+        oldscore = 1;
+        score = oldscore;
+        while score > .05 & count < 100
+            new_xrange = old_xrange + u(j,i);
+            new_yrange = old_yrange + v(j,i);
+            Wprime = interp2(img1, new_yrange, new_xrange,'*linear');
+            It_new = Wprime-W2;
+            score = ((sum(sum(It_old-It_new))).^2 - oldscore)/oldscore;
+            It_old = It_new;
+            old_xrange = new_xrange;
+            old_yrange = new_yrange;
+            oldscore = score;
+            count = count+1;
+        end
+        Xpts(j,i+1) = Xpts(j,i) + count*u(j,i);
+        Ypts(j,i+1) = Ypts(j,i) + count*v(j,i);
+%         pts(j,2) = pts(j,2) + count*u(j,i);
+%         pts(j,1) = pts(j,1) + count*v(j,i);
+    end
+end
+
+figure(2)
+imshow(imgArr{n});
+hold on
+scatter(Xpts(:,n
