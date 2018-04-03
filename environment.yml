@@ -1,6 +1,7 @@
 name: cvml
 channels:
   - conda-forge
+  - anaconda
 dependencies:
   - python=3.6
   - pillow=5
@@ -13,6 +14,9 @@ dependencies:
   - ipython
   - jupyterlab
   - jupyter_contrib_nbextensions
+  - tensorflow=1.6
+  - tensorboard=1.6
+  - keras=2.1.5 
   - pip:
     - sklearn-pandas
     - imbalanced-learn
