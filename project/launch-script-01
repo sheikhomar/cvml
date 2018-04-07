@@ -1,0 +1,6 @@
+#PBS -N cvml
+cd $PBS_O_WORKDIR
+echo Starting script-01-basic-cnn.py
+python script-01-basic-cnn.py
+echo End of script
+
