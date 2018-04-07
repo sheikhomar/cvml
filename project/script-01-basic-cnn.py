@@ -1,12 +1,6 @@
 import time
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-%matplotlib inline
-
-from sklearn.metrics import classification_report
 
 from keras import applications
 from keras.preprocessing.image import ImageDataGenerator
@@ -16,14 +10,10 @@ from keras.layers import Dropout, Flatten, Dense, GlobalAveragePooling2D, Conv2D
 from keras import backend as k 
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
 
-
-
+# Read data sets
 y_train = pd.read_csv('Train/trainLbls.csv', header=None, names=['label'])['label']
 y_validation = pd.read_csv('Validation/valLbls.csv', header=None, names=['label'])['label']
 X_test = pd.read_csv('Test/testVectors.csv', header=None).transpose()
-
-
-
 
 img_width, img_height = 256, 256
 train_data_dir = "Train/TrainImages"
@@ -35,8 +25,6 @@ n_test_samples = X_test.shape[0]
 n_labels = len(y_train.unique())
 batch_size = 16
 epochs = 50
-
-
 
 # ImageDataGenerator generates batches of normalised image data i.e.
 # a format that the images must be in to be read by the Keras model
@@ -89,8 +77,9 @@ early = EarlyStopping(monitor='val_acc', min_delta=0, patience=10, verbose=1, mo
 model.fit_generator(train_batches, 
                     steps_per_epoch=int(n_train_samples/batch_size),
                     validation_data=validation_batches,
-                    validation_steps=int(n_validation_samples/batch_size)
+                    validation_steps=int(n_validation_samples/batch_size),
                     epochs=epochs,
                     verbose=1,
                     callbacks = [checkpoint, early]
                    )
+
