@@ -1,0 +1,5 @@
+#PBS -l walltime=24:00:00 -N cvml
+cd $PBS_O_WORKDIR
+echo Starting
+time python model-02-vgg16-part-01.py
+echo End of script
