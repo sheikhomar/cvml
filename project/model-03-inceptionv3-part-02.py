@@ -30,15 +30,12 @@ N_TEST_SAMPLES = 3460
 N_LABELS = 29
 
 # Model parameters
-DATA_AUGMENTATION_FACTOR = 5
+DATA_AUGMENTATION_FACTOR = 10
 N_FROZEN_LAYERS = 0
 BATCH_SIZE = 16
-LEARNING_RATE = 0.0001
+LEARNING_RATE = 0.001
 EPOCHS = 100
 VERBOSE = 0
-
-model_weights_url = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.5/inception_v3_weights_tf_dim_ordering_tf_kernels.h5'
-model_weights_path = 'inception_v3_weights_tf_dim_ordering_tf_kernels.h5'
 
 print('Running {}'.format(MODEL_NAME))
 
@@ -48,27 +45,6 @@ inception_model = applications.InceptionV3(
   include_top=False, 
   input_shape=(IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS)
 )
-
-if (os.path.isfile(model_weights_path)):
-  print('Model file already downloaded')
-else:
-  # Download pre-trained weights
-  print('Downloading {}...'.format(model_weights_path))
-  urllib.request.urlretrieve(model_weights_url, model_weights_path)
- 
-print('Loading weights...')
-# Load weights from the downloaded file
-with h5py.File(model_weights_path) as model_weights_file:
-  layer_names = model_weights_file.attrs['layer_names']
-  for i, layer_name in enumerate(layer_names):
-    level_0 = model_weights_file[layer_name]
-    transfered_weights = []
-    for k0 in level_0.keys():
-      level_1 = level_0[k0]
-      for k1 in level_1.keys():
-        transfered_weights.append(level_1[k1][()])
-    inception_model.layers[i].set_weights(transfered_weights)
-print('Done loading weights')
 
 # Add custom layers
 output_layer = inception_model.output
