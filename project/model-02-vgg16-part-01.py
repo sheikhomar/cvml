@@ -7,7 +7,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
 from keras.models import Sequential, Model
 from keras.layers import Dropout, Flatten, Dense, Conv2D
-from keras import backend as k 
+from keras import backend as k
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
 
 script_name, script_ext = os.path.splitext(sys.argv[0])
@@ -39,8 +39,8 @@ print('Running {}'.format(MODEL_NAME))
 
 # Download VGG 16 model
 vgg_model = applications.VGG16(
-  weights="imagenet", 
-  include_top=False, 
+  weights=None,
+  include_top=False,
   input_shape=(IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS)
 )
 
@@ -48,8 +48,8 @@ vgg_model = applications.VGG16(
 model = Sequential(vgg_model.layers)
 
 # Freeze some layers
-for layer in model.layers[:N_FROZEN_LAYERS]:
-  layer.trainable = False
+#for layer in model.layers[:N_FROZEN_LAYERS]:
+#  layer.trainable = False
 
 # Add custom layers
 model.add(Flatten())
@@ -59,8 +59,8 @@ model.add(Dense(1024, activation='relu'))
 model.add(Dense(N_LABELS, activation='softmax'))
 
 model.compile(
-  optimizers.Adam(lr=LEARNING_RATE), 
-  loss='categorical_crossentropy', 
+  optimizers.Adam(lr=LEARNING_RATE),
+  loss='categorical_crossentropy',
   metrics=['accuracy']
 )
 
@@ -71,19 +71,19 @@ print(model.summary())
 checkpoint = ModelCheckpoint(
   'models/%s-epoch{epoch:02d}-valacc{val_acc:.2f}-valloss{val_loss:.2f}.hdf5' % MODEL_NAME,
   monitor='val_acc',
-  save_best_only=False, 
-  save_weights_only=False, 
-  mode='auto', 
+  save_best_only=False,
+  save_weights_only=False,
+  mode='auto',
   period=1,
   verbose=VERBOSE
 )
 
 # Define early stopping
 early = EarlyStopping(
-  monitor='val_acc', 
-  min_delta=0, 
+  monitor='val_acc',
+  min_delta=0,
   patience=10,
-  mode='auto', 
+  mode='auto',
   verbose=VERBOSE
 )
 
@@ -119,7 +119,7 @@ validation_batches = ImageDataGenerator(
 )
 
 model.fit_generator(
-  train_batches, 
+  train_batches,
   steps_per_epoch=int(N_TRAIN_SAMPLES/BATCH_SIZE) * DATA_AUGMENTATION_FACTOR,
   validation_data=validation_batches,
   validation_steps=int(N_VALIDATION_SAMPLES/BATCH_SIZE) * DATA_AUGMENTATION_FACTOR,
