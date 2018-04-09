@@ -5,10 +5,11 @@ import time
 from keras import applications
 from keras.preprocessing.image import ImageDataGenerator
 from keras import optimizers
-from keras.models import Sequential, Model
+from keras.models import Sequential, Model, load_model
 from keras.layers import Dropout, Flatten, Dense, Conv2D
 from keras import backend as k
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
+import helpers as helpers
 
 script_name, script_ext = os.path.splitext(sys.argv[0])
 
@@ -33,36 +34,36 @@ N_FROZEN_LAYERS = 5
 BATCH_SIZE = 16
 LEARNING_RATE = 0.0001
 EPOCHS = 100
-VERBOSE = 0
+VERBOSE = 1
 
 print('Running {}'.format(MODEL_NAME))
 
-# Download VGG 16 model
-vgg_model = applications.VGG16(
-  weights=None,
-  include_top=False,
-  input_shape=(IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS)
-)
+saved_model_path = helpers.find_best_model(MODEL_NAME)
 
-# Convert the VGG model to Sequential model
-model = Sequential(vgg_model.layers)
+if saved_model_path is None:
+  # Download VGG 16 model
+  vgg_model = applications.VGG16(
+    weights=None,
+    include_top=False,
+    input_shape=(IMG_WIDTH, IMG_HEIGHT, IMG_CHANNELS)
+  )
 
-# Freeze some layers
-#for layer in model.layers[:N_FROZEN_LAYERS]:
-#  layer.trainable = False
+  # Convert the VGG model to Sequential model
+  model = Sequential(vgg_model.layers)
 
-# Add custom layers
-model.add(Flatten())
-model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(1024, activation='relu'))
-model.add(Dense(N_LABELS, activation='softmax'))
+  model.add(Flatten())
+  model.add(Dense(1024, activation='relu'))
+  model.add(Dropout(0.5))
+  model.add(Dense(1024, activation='relu'))
+  model.add(Dense(N_LABELS, activation='softmax'))
 
-model.compile(
-  optimizers.Adam(lr=LEARNING_RATE),
-  loss='categorical_crossentropy',
-  metrics=['accuracy']
-)
+  model.compile(
+    optimizers.Adam(lr=LEARNING_RATE),
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+  )
+else:
+  model = load_model(saved_model_path)
 
 # Print out final model
 print(model.summary())
@@ -72,7 +73,7 @@ checkpoint = ModelCheckpoint(
   'models/%s-epoch{epoch:02d}-valacc{val_acc:.2f}-valloss{val_loss:.2f}.hdf5' % MODEL_NAME,
   monitor='val_acc',
   save_best_only=False,
-  save_weights_only=False,
+  save_weights_only=True,
   mode='auto',
   period=1,
   verbose=VERBOSE
