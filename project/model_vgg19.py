@@ -33,6 +33,7 @@ class ModelVGG19(ModelBase):
 
         return new_model
 
-    def run(self, learning_rate, n_frozen_layers):
+    def run(self, learning_rate, n_frozen_layers, batch_size=16):
+        self.batch_size = batch_size
         m = self.get_model(n_frozen_layers=n_frozen_layers)
         self.train_model(m, learning_rate=learning_rate)
