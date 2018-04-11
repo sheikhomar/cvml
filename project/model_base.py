@@ -149,9 +149,12 @@ class ModelBase:
             print('Downloading {}...'.format(model_weights_path))
             urllib.request.urlretrieve(model_weights_url, model_weights_path)
 
+        self.load_weights_from_file(model, model_weights_path)
+
+    def load_weights_from_file(self, model, file_path):
         print('Loading weights...')
         # Load weights from the downloaded file
-        with h5py.File(model_weights_path) as model_weights_file:
+        with h5py.File(file_path) as model_weights_file:
             layer_names = model_weights_file.attrs['layer_names']
             for i, layer_name in enumerate(layer_names):
                 level_0 = model_weights_file[layer_name]
