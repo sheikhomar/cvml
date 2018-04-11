@@ -55,6 +55,14 @@ class ModelBase:
             return load_model(saved_model_path)
         return None
 
+    def has_saved_weights(self):
+        return self.find_best_model() is not None
+
+    def load_saved_weights(self, new_model):
+        saved_weights_path = self.find_best_model()
+        if saved_weights_path is not None:
+            new_model.load_weights(saved_weights_path)
+
     def train_model(self, model, learning_rate=0.001):
         model.compile(
             optimizers.Adam(lr=learning_rate),
@@ -129,6 +137,10 @@ class ModelBase:
         )
 
     def load_pretrained_weights(self, model, model_weights_url):
+        if self.has_saved_weights():
+            print('Have previous weights saved')
+            return
+
         model_weights_path = 'models/{}'.format(os.path.basename(model_weights_url))
         if os.path.isfile(model_weights_path):
             print('Model file already downloaded')
