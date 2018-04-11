@@ -43,7 +43,7 @@ class ModelBase:
                 values = re.findall('val[^\d]*(\d+\.\d*)', f)
                 acc = float(values[0])
                 loss = float(values[1])
-                if acc > best_acc and loss < best_loss:
+                if acc > best_acc:
                     best_acc = acc
                     best_loss = loss
                     best_model = os.path.join(models_dir, f)
