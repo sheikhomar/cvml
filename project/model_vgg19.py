@@ -6,8 +6,8 @@ from keras.layers import Dropout, Flatten, Dense, Conv2D
 
 
 class ModelVGG19(ModelBase):
-    def __init__(self):
-        ModelBase.__init__(self)
+    def __init__(self, model_name=None):
+        ModelBase.__init__(self, model_name=model_name)
 
     def get_model(self, n_frozen_layers=0):
         base_model = applications.VGG19(
@@ -38,3 +38,7 @@ class ModelVGG19(ModelBase):
         self.batch_size = batch_size
         m = self.get_model(n_frozen_layers=n_frozen_layers)
         self.train_model(m, learning_rate=learning_rate)
+
+    def predict(self):
+        m = self.get_model()
+        return ModelBase.predict(self, m)

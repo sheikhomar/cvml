@@ -169,3 +169,36 @@ class ModelBase:
                         transferred_weights.append(level_0[k0][()])
                 model.layers[i].set_weights(transferred_weights)
         print('Done loading weights')
+
+    def get_test_data_gen(self):
+        classes = [str(i) for i in range(1, self.n_labels+1)]
+        return ImageDataGenerator().flow_from_directory(
+            self.test_data_dir,
+            target_size=(self.img_height, self.img_width),
+            batch_size=self.batch_size
+        )
+
+    def predict(self, model):
+        test_gen = self.get_test_data_gen()
+        print('Generating predictions...')
+        predictions = model.predict_generator(test_gen, verbose=1)
+        print('Write predictions...')
+        self.write_predictions(predictions)
+        return predictions
+
+    def predict_validation(self, model):
+        val_gen = ImageDataGenerator().flow_from_directory(
+            self.validation_data_dir,
+            target_size=(self.img_height, self.img_width),
+            batch_size=self.batch_size,
+            class_mode="categorical"
+        )
+        predictions = model.predict_generator(val_gen, verbose=1)
+        return predictions
+
+    def write_predictions(self, predictions):
+        file_name = 'predictions-{}.csv'.format(self.model_name)
+        with open(file_name, 'w') as file:
+            file.write('ID,Label')
+            for index, value in enumerate(predictions):
+                file.write('\n{0},{1}'.format(index+1, value))
