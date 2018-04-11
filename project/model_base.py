@@ -61,6 +61,7 @@ class ModelBase:
     def load_saved_weights(self, new_model):
         saved_weights_path = self.find_best_model()
         if saved_weights_path is not None:
+            print('Loading saved weights from: {}'.format(saved_weights_path))
             new_model.load_weights(saved_weights_path)
 
     def train_model(self, model, learning_rate=0.001):
