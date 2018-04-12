@@ -9,12 +9,24 @@ class ImageAugmentation:
 
     def _get_generator(self):
         return ImageDataGenerator(
-            rotation_range=180,
+            rotation_range=360,
             width_shift_range=0.2,
             height_shift_range=0.2,
+            shear_range=10,
+            zoom_range=0.2,
             horizontal_flip=True,
             vertical_flip=True
         )
+
+    def clean(self, folder):
+        class_dirs = os.listdir(folder)
+        for class_dir in sorted(class_dirs):
+            file_names = os.listdir(os.path.join(folder, class_dir))
+            for file_name in sorted(file_names):
+                if len(file_name.split('_')) > 1:
+                    file_path = os.path.join(folder, class_dir, file_name)
+                    print(' Deleting {}'.format(file_path))
+                    os.remove(file_path)
 
     def run(self, folder, class_size=2000, random_seed=42):
         gen = self._get_generator()
@@ -49,4 +61,6 @@ class ImageAugmentation:
                         break
 
 
-ImageAugmentation().run('Train/TrainImages')
+augmenter = ImageAugmentation()
+# augmenter.clean('Train/TrainImages')
+augmenter.run('Train/TrainImages')
