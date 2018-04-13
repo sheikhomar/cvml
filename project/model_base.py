@@ -10,7 +10,13 @@ from keras import optimizers
 
 
 class ModelBase:
-    def __init__(self, model_name=None, batch_size=16, verbose=0):
+    def __init__(self,
+                 model_name=None,
+                 batch_size=16,
+                 verbose=0,
+                 n_freeze_layers=0,
+                 learning_rate=0.00001
+                 ):
         if model_name is None:
             script_name, script_ext = os.path.splitext(sys.argv[0])
             self.model_name = script_name
@@ -29,9 +35,9 @@ class ModelBase:
         self.n_validation_samples = 2298
         self.n_test_samples = 3460
         self.n_labels = 29
-        self.epochs = 10
-        self.n_freeze_layers = 0
-        self.learning_rate = 0.00001
+        self.epochs = 100
+        self.n_freeze_layers = n_freeze_layers
+        self.learning_rate = learning_rate
         self.imagenet_weights_url = None
 
     def train(self):
@@ -86,7 +92,7 @@ class ModelBase:
             self.model.load_weights(saved_weights_path)
 
         elif self.imagenet_weights_url is not None and len(self.imagenet_weights_url) > 0:
-            model_weights_path = 'models/{}'.format(os.path.basename(self.imagenet_weights_url))
+            model_weights_path = 'saved_weights/{}'.format(os.path.basename(self.imagenet_weights_url))
             if os.path.isfile(model_weights_path):
                 print('Model file already downloaded')
             else:
@@ -111,7 +117,8 @@ class ModelBase:
     def _get_callbacks(self):
         # Define model checkpoint
         checkpoint = ModelCheckpoint(
-            'models/%s-epoch{epoch:02d}-valacc{val_acc:.2f}-valloss{val_loss:.2f}-acc{acc:.2f}-loss{loss:.2f}.hdf5' % self.model_name,
+            'saved_weights/%s-epoch{epoch:02d}-acc{acc:.2f}-loss{loss:.2f}'
+            '-valacc{val_acc:.2f}-valloss{val_loss:.2f}.hdf5' % self.model_name,
             monitor='val_acc',
             save_best_only=False,
             save_weights_only=True,
