@@ -6,8 +6,8 @@ from keras.layers import Dropout, Dense, GlobalAveragePooling2D
 
 
 class ModelInceptionV3(ModelBase):
-    def __init__(self):
-        ModelBase.__init__(self, batch_size=2, verbose=1)
+    def __init__(self, *args, **kwargs):
+        ModelBase.__init__(self, *args, **kwargs)
         self.imagenet_use_id = True
         self.imagenet_weights_url = \
             'https://github.com/fchollet/deep-learning-models/releases/download' \
