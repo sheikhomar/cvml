@@ -2,5 +2,6 @@
 .m~
 .idea
 models
+saved_weights
 job_results
 __pycache__
