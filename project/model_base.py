@@ -40,6 +40,19 @@ class ModelBase:
         self.learning_rate = learning_rate
         self.imagenet_weights_url = None
 
+    def load_model(self, model_weights=None):
+        print('Creating model...')
+        self._create()
+        print('Loading weights from {}...'.format(model_weights))
+        self.model.load_weights(model_weights)
+        print('Compiling...')
+        self.model.compile(
+            optimizers.Adam(lr=self.learning_rate),
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+        return self.model
+
     def train(self):
         print('Creating model...')
         self._create()
@@ -47,7 +60,7 @@ class ModelBase:
         self._freeze_top_layers()
 
         print('Loading weights...')
-        self._load_weights()
+        self._load_pretrained_weights()
 
         print('Compiling...')
         self.model.compile(
@@ -59,22 +72,10 @@ class ModelBase:
         print(self.model.summary())
 
         # Data generators for the model
-        train_gen = ImageDataGenerator().flow_from_directory(
-            self.train_data_dir,
-            target_size=(self.img_height, self.img_width),
-            batch_size=self.batch_size,
-            class_mode="categorical"
-        )
-
-        validation_gen = ImageDataGenerator().flow_from_directory(
-            self.validation_data_dir,
-            target_size=(self.img_height, self.img_width),
-            batch_size=self.batch_size,
-            class_mode="categorical"
-        )
+        train_gen = self._get_train_generator()
+        validation_gen = self._get_validation_generator()
 
         print('Training model...')
-
         self.model.fit_generator(
             train_gen,
             steps_per_epoch=int(self.n_train_samples / self.batch_size),
@@ -85,13 +86,30 @@ class ModelBase:
             verbose=self.verbose
         )
 
-    def _load_weights(self):
+    def _get_validation_generator(self):
+        return ImageDataGenerator().flow_from_directory(
+            self.validation_data_dir,
+            target_size=(self.img_height, self.img_width),
+            batch_size=self.batch_size,
+            class_mode="categorical"
+        )
+
+    def _get_train_generator(self):
+        return ImageDataGenerator().flow_from_directory(
+            self.train_data_dir,
+            target_size=(self.img_height, self.img_width),
+            batch_size=self.batch_size,
+            class_mode="categorical"
+        )
+
+    def _load_pretrained_weights(self):
         saved_weights_path = self._find_saved_weights()
         if saved_weights_path is not None:
             print('Loading saved weights from: {}'.format(saved_weights_path))
             self.model.load_weights(saved_weights_path)
 
         elif self.imagenet_weights_url is not None and len(self.imagenet_weights_url) > 0:
+            print('Loading imagenet weights...')
             model_weights_path = 'saved_weights/{}'.format(os.path.basename(self.imagenet_weights_url))
             if os.path.isfile(model_weights_path):
                 print('Model file already downloaded')
