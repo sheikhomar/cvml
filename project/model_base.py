@@ -5,8 +5,11 @@ import urllib.request
 import h5py
 
 from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing import image
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras import optimizers
+
+import numpy as np
 
 
 class ModelBase:
@@ -85,6 +88,47 @@ class ModelBase:
             callbacks=self._get_callbacks(),
             verbose=self.verbose
         )
+
+    def predict_validation(self, model_weights):
+        self.load_model(model_weights)
+
+        # We need the ImageDataGenerator used to train the model
+        # because it contains a mapping between classes and indices
+        train_gen = self._get_train_generator()
+
+        # Reverse keys and values so values becomes keys
+        label_map = {v: int(k) for k, v in train_gen.class_indices.items()}
+
+        # Find images in the validation set
+        img_paths = self._get_validation_image_paths()
+
+        # Create a predictions array based on number of images found
+        # in the directory
+        y_predictions = np.zeros(len(img_paths), dtype=np.int8)
+
+        for i, (img_num, img_path) in enumerate(img_paths):
+            img_data = self._load_image(img_path)
+            pred_index = self.model.predict_classes(img_data)[0]
+            pred_label = label_map[pred_index]
+            y_predictions[img_num-1] = pred_label
+
+        return y_predictions
+
+    def _load_image(self, image_path):
+        img = image.load_img(image_path, target_size=(self.img_width, self.img_height))
+        x = image.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        return x
+
+    def _get_validation_image_paths(self):
+        final_list = []
+        for sub_dir in os.listdir(self.validation_data_dir):
+            sub_dir_path = os.path.join(self.validation_data_dir, sub_dir)
+            for img_name in os.listdir(sub_dir_path):
+                img_number = int(re.findall(r'\d+', img_name)[0])
+                img_path = os.path.join(sub_dir_path, img_name)
+                final_list.append((img_number, img_path))
+        return final_list
 
     def _get_validation_generator(self):
         return ImageDataGenerator().flow_from_directory(
