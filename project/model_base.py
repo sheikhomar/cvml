@@ -90,23 +90,38 @@ class ModelBase:
         )
 
     def predict_validation(self, model_weights):
+        img_paths = self._get_validation_image_paths()
+        return self._predict(model_weights, img_paths)
+
+    def predict_test(self, model_weights):
+        img_paths = self._get_test_image_paths()
+        return self._predict(model_weights, img_paths)
+
+    @staticmethod
+    def write_predictions(predictions, file_name='predictions.csv'):
+        with open(file_name, 'w') as file:
+            file.write('ID,Label')
+            for index, value in enumerate(predictions):
+                file.write('\n{0},{1}'.format(index + 1, value))
+
+    @staticmethod
+    def show_progress_bar(iteration, total, bar_length=50):
+        percent = int(round((iteration / total) * 100))
+        nb_bar_fill = int(round((bar_length * percent) / 100))
+        bar_fill = '#' * nb_bar_fill
+        bar_empty = ' ' * (bar_length - nb_bar_fill)
+        sys.stdout.write("\r  [{0}] {1}%".format(str(bar_fill + bar_empty), percent))
+        sys.stdout.flush()
+
+    def _predict(self, model_weights, img_paths):
         self.load_model(model_weights)
 
-        # We need the ImageDataGenerator used to train the model
-        # because it contains a mapping between classes and indices
-        train_gen = self._get_train_generator()
-
-        # Reverse keys and values so values becomes keys
-        label_map = {v: int(k) for k, v in train_gen.class_indices.items()}
-
-        # Find images in the validation set
-        img_paths = self._get_validation_image_paths()
-
-        # Create a predictions array based on number of images found
-        # in the directory
-        y_predictions = np.zeros(len(img_paths), dtype=np.int8)
+        label_map = self._get_label_map()
+        img_count = len(img_paths)
+        y_predictions = np.zeros(img_count, dtype=np.int8)
 
         for i, (img_num, img_path) in enumerate(img_paths):
+            ModelBase.show_progress_bar(i, img_count)
             img_data = self._load_image(img_path)
             pred_index = self.model.predict_classes(img_data)[0]
             pred_label = label_map[pred_index]
@@ -114,11 +129,29 @@ class ModelBase:
 
         return y_predictions
 
+    def _get_label_map(self):
+        # We need the ImageDataGenerator used to train the model
+        # because it contains a mapping between classes and indices
+        train_gen = self._get_train_generator()
+
+        # Reverse keys and values so values becomes keys
+        label_map = {v: int(k) for k, v in train_gen.class_indices.items()}
+
+        return label_map
+
     def _load_image(self, image_path):
         img = image.load_img(image_path, target_size=(self.img_width, self.img_height))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
         return x
+
+    def _get_test_image_paths(self):
+        final_list = []
+        for img_name in os.listdir(self.test_data_dir):
+            img_number = int(re.findall(r'\d+', img_name)[0])
+            img_path = os.path.join(self.test_data_dir, img_name)
+            final_list.append((img_number, img_path))
+        return final_list
 
     def _get_validation_image_paths(self):
         final_list = []
