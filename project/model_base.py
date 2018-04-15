@@ -251,10 +251,13 @@ class ModelBase:
 
     def _load_weights_from_file(self, file_path):
         print('Loading weights from {}...'.format(file_path))
+
+        layer_indices = {l.name: i for (i, l) in enumerate(self.model.layers)}
+
         # Load weights from the downloaded file
         with h5py.File(file_path) as model_weights_file:
             layer_names = model_weights_file.attrs['layer_names']
-            for i, layer_name in enumerate(layer_names):
+            for layer_name in layer_names:
                 level_0 = model_weights_file[layer_name]
                 transferred_weights = []
                 for k0 in level_0.keys():
@@ -264,5 +267,6 @@ class ModelBase:
                             transferred_weights.append(level_1[k1][()])
                     else:
                         transferred_weights.append(level_0[k0][()])
-                self.model.layers[i].set_weights(transferred_weights)
+                layer_index = layer_indices[layer_name.decode('UTF-8')]
+                self.model.layers[layer_index].set_weights(transferred_weights)
         print('Done loading weights')
