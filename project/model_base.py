@@ -7,6 +7,7 @@ import h5py
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing import image
 from keras.callbacks import ModelCheckpoint, EarlyStopping
+from keras.models import Sequential
 from keras import optimizers
 
 import numpy as np
@@ -124,7 +125,11 @@ class ModelBase:
         for i, (img_num, img_path) in enumerate(img_paths):
             ModelBase.show_progress_bar(i, img_count)
             img_data = self._load_image(img_path)
-            pred_index = self.model.predict_classes(img_data)[0]
+            if isinstance(self.model, Sequential):
+                pred_index = self.model.predict_classes(img_data)[0]
+            else:
+                predictions = self.model.predict(img_data)
+                pred_index = np.argmax(predictions, axis=1)[0]
             pred_label = label_map[pred_index]
             y_predictions[img_num-1] = pred_label
 
