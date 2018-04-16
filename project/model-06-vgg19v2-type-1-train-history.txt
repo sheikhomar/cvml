@@ -73,3 +73,10 @@
 -rw-rw-r--. 1 u12799 u12799 653M Apr 15 19:18 model-06-vgg19v2-type-1-epoch73-acc0.92-loss0.24-valacc0.84-valloss0.58.hdf5
 -rw-rw-r--. 1 u12799 u12799 653M Apr 15 19:29 model-06-vgg19v2-type-1-epoch74-acc0.91-loss0.24-valacc0.82-valloss0.67.hdf5
 -rw-rw-r--. 1 u12799 u12799 653M Apr 15 19:39 model-06-vgg19v2-type-1-epoch75-acc0.91-loss0.25-valacc0.83-valloss0.60.hdf5
+-rw-rw-r--. 1 u12799 u12799 653M Apr 15 19:50 model-06-vgg19v2-type-1-epoch76-acc0.92-loss0.23-valacc0.84-valloss0.60.hdf5
+-rw-rw-r--. 1 u12799 u12799 653M Apr 15 20:01 model-06-vgg19v2-type-1-epoch77-acc0.92-loss0.23-valacc0.84-valloss0.62.hdf5
+-rw-rw-r--. 1 u12799 u12799 653M Apr 15 20:12 model-06-vgg19v2-type-1-epoch78-acc0.92-loss0.22-valacc0.83-valloss0.63.hdf5
+-rw-rw-r--. 1 u12799 u12799 653M Apr 15 20:23 model-06-vgg19v2-type-1-epoch79-acc0.92-loss0.23-valacc0.83-valloss0.73.hdf5
+-rw-rw-r--. 1 u12799 u12799 653M Apr 15 20:34 model-06-vgg19v2-type-1-epoch80-acc0.91-loss0.24-valacc0.82-valloss0.65.hdf5
+-rw-rw-r--. 1 u12799 u12799 653M Apr 15 20:44 model-06-vgg19v2-type-1-epoch81-acc0.92-loss0.23-valacc0.84-valloss0.58.hdf5
+-rw-rw-r--. 1 u12799 u12799 653M Apr 15 20:55 model-06-vgg19v2-type-1-epoch82-acc0.93-loss0.20-valacc0.84-valloss0.58.hdf5

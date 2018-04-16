@@ -51,3 +51,14 @@
 -rw-rw-r--. 1 u12799 u12799 633M Apr 15 19:14 model-02-vgg16-part-01-epoch51-acc0.85-loss0.41-valacc0.84-valloss0.55.hdf5
 -rw-rw-r--. 1 u12799 u12799 633M Apr 15 19:29 model-02-vgg16-part-01-epoch52-acc0.86-loss0.40-valacc0.82-valloss0.58.hdf5
 -rw-rw-r--. 1 u12799 u12799 633M Apr 15 19:44 model-02-vgg16-part-01-epoch53-acc0.85-loss0.42-valacc0.83-valloss0.56.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 19:59 model-02-vgg16-part-01-epoch54-acc0.86-loss0.40-valacc0.85-valloss0.52.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 20:13 model-02-vgg16-part-01-epoch55-acc0.86-loss0.39-valacc0.83-valloss0.54.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 20:28 model-02-vgg16-part-01-epoch56-acc0.87-loss0.37-valacc0.83-valloss0.56.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 20:43 model-02-vgg16-part-01-epoch57-acc0.87-loss0.39-valacc0.83-valloss0.54.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 20:58 model-02-vgg16-part-01-epoch58-acc0.87-loss0.38-valacc0.84-valloss0.53.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 21:13 model-02-vgg16-part-01-epoch59-acc0.88-loss0.35-valacc0.84-valloss0.54.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 21:27 model-02-vgg16-part-01-epoch60-acc0.88-loss0.35-valacc0.84-valloss0.51.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 21:42 model-02-vgg16-part-01-epoch61-acc0.89-loss0.30-valacc0.84-valloss0.54.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 21:57 model-02-vgg16-part-01-epoch62-acc0.90-loss0.30-valacc0.84-valloss0.59.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 22:12 model-02-vgg16-part-01-epoch63-acc0.90-loss0.27-valacc0.85-valloss0.53.hdf5
+-rw-rw-r--. 1 u12799 u12799 633M Apr 15 22:27 model-02-vgg16-part-01-epoch64-acc0.90-loss0.29-valacc0.85-valloss0.51.hdf5
