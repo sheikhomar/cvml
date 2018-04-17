@@ -276,6 +276,9 @@ class ModelBase:
                 if self.imagenet_use_id:
                     layer_index = i
                 else:
-                    layer_index = layer_indices[layer_name.decode('UTF-8')]
+                    layer_key = layer_name.decode('UTF-8')
+                    if layer_key not in layer_indices:
+                        continue
+                    layer_index = layer_indices[layer_key]
                 self.model.layers[layer_index].set_weights(transferred_weights)
         print('Done loading weights')
