@@ -39,7 +39,7 @@ class ModelBase:
         self.n_validation_samples = 2298
         self.n_test_samples = 3460
         self.n_labels = 29
-        self.epochs = 100
+        self.epochs = 400
         self.n_freeze_layers = n_freeze_layers
         self.learning_rate = learning_rate
         self.imagenet_weights_url = None
