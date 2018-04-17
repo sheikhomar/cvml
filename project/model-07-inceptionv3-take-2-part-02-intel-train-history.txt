@@ -1,0 +1,11 @@
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 11:47 model-07-inceptionv3-take-2-part-02-epoch01-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 12:09 model-07-inceptionv3-take-2-part-02-epoch02-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 12:30 model-07-inceptionv3-take-2-part-02-epoch03-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 12:52 model-07-inceptionv3-take-2-part-02-epoch04-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 13:14 model-07-inceptionv3-take-2-part-02-epoch05-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 13:35 model-07-inceptionv3-take-2-part-02-epoch06-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 13:57 model-07-inceptionv3-take-2-part-02-epoch07-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 14:18 model-07-inceptionv3-take-2-part-02-epoch08-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 14:40 model-07-inceptionv3-take-2-part-02-epoch09-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 15:02 model-07-inceptionv3-take-2-part-02-epoch10-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
+-rw-rw-r--. 1 u12799 u12799 156M Apr 16 15:23 model-07-inceptionv3-take-2-part-02-epoch11-acc0.04-lossnan-valacc0.05-vallossnan.hdf5
