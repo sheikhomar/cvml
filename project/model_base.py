@@ -19,7 +19,8 @@ class ModelBase:
                  batch_size=16,
                  verbose=0,
                  n_freeze_layers=0,
-                 learning_rate=0.00001
+                 learning_rate=0.00001,
+                 epochs=400,
                  ):
         if model_name is None:
             script_name, script_ext = os.path.splitext(sys.argv[0])
@@ -39,7 +40,7 @@ class ModelBase:
         self.n_validation_samples = 2298
         self.n_test_samples = 3460
         self.n_labels = 29
-        self.epochs = 400
+        self.epochs = epochs
         self.n_freeze_layers = n_freeze_layers
         self.learning_rate = learning_rate
         self.imagenet_weights_url = None
