@@ -1,6 +1,6 @@
-from model_vgg19v3 import ModelVGG19v3
+from model_vgg16bn import ModelVGG16BN
 
-ModelVGG19v3(
+ModelVGG16BN(
     learning_rate=0.0001,
     batch_size=128
 ).train()
