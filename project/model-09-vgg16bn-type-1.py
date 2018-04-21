@@ -1,6 +1,7 @@
-from model_vgg16bn import ModelVGG16BN
+from model_vgg19v3 import ModelVGG19v3
 
-ModelVGG16BN(
-    learning_rate=0.001,
-    batch_size=64
+ModelVGG19v3(
+    learning_rate=0.0001,
+    n_freeze_layers=12,
+    batch_size=128
 ).train()

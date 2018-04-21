@@ -3,17 +3,16 @@ from model_base import ModelBase
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import Dropout, Flatten, Dense, Lambda
+from keras.layers import Dropout, Flatten, Dense, Lambda, Conv2D
 from keras.layers.normalization import BatchNormalization
-from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
+from keras.layers.convolutional import MaxPooling2D, ZeroPadding2D
 
 
-vgg_mean = np.array([123.68, 116.779, 103.939], dtype=np.float32).reshape((3, 1, 1))
-
-
-def vgg_preprocess(x):
-    x = x - vgg_mean
-    return x[:, ::-1]  # reverse axis rgb->bgr
+def preprocess(x):
+    # sample-wise scale pixel intensities between -1 and 1,
+    x /= 127.5
+    x -= 1.
+    return x
 
 
 class ModelVGG16BN(ModelBase):
@@ -23,8 +22,8 @@ class ModelVGG16BN(ModelBase):
     def _add_convolution_block(self, layers, filters):
         for i in range(layers):
             self.model.add(ZeroPadding2D((1, 1)))
-            self.model.add(Convolution2D(filters, 3, 3, activation='relu'))
-            self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+            self.model.add(Conv2D(filters, (3, 3), activation='relu'))
+        self.model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     def _add_fully_connected_block(self):
         self.model.add(Dense(4096, activation='relu'))
@@ -32,12 +31,11 @@ class ModelVGG16BN(ModelBase):
         self.model.add(Dropout(0.5))
 
     def _create(self):
-        shape = (self.img_width, self.img_height, self.img_channels)
-
         self.model = Sequential()
 
+        shape = (self.img_width, self.img_height, self.img_channels)
         self.model.add(
-            Lambda(vgg_preprocess, input_shape=shape, output_shape=shape)
+            Lambda(preprocess, input_shape=shape, output_shape=shape)
         )
 
         self._add_convolution_block(2, 64)
@@ -48,7 +46,7 @@ class ModelVGG16BN(ModelBase):
 
         self.model.add(Flatten())
 
-        self._add_convolution_block()
-        self._add_convolution_block()
+        self._add_fully_connected_block()
+        self._add_fully_connected_block()
 
         self.model.add(Dense(self.n_labels, activation='softmax'))
