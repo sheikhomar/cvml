@@ -1,7 +1,7 @@
 
 from sklearn.svm import SVC
 
-from scripts.simple_model_base import SimpleModelBase
+from simple_model_base import SimpleModelBase
 
 class SVM(SimpleModelBase):
   def __init__(self, *args, **kwargs):
