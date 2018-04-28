@@ -1,7 +1,7 @@
 import numpy as np
 
 from sklearn.ensemble import RandomForestClassifier
-from .simple_model_base import SimpleModelBase
+from simple_model_base import SimpleModelBase
 
 
 class RandomForest(SimpleModelBase):
