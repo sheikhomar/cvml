@@ -53,5 +53,5 @@ class ModelVGG16BN(ModelBase):
 
 ModelVGG16BN(
     learning_rate=0.0001,
-    batch_size=128
+    batch_size=64
 ).train()
