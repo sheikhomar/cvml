@@ -20,4 +20,4 @@ class RandomForest(SimpleModelBase):
 
 
 if __name__ == '__main__':
-  RandomForest().predict()
+  RandomForest().run()
