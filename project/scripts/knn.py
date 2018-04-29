@@ -18,4 +18,4 @@ class KNN(SimpleModelBase):
 
 
 if __name__ == '__main__':
-  KNN(n_jobs=-1).run()
+  KNN(n_jobs=-1).predict()

@@ -18,4 +18,4 @@ class SVM(SimpleModelBase):
 
 
 if __name__ == '__main__':
-    SVM().run()
+    SVM().predict()
