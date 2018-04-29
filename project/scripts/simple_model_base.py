@@ -9,7 +9,7 @@ from sklearn.model_selection import RandomizedSearchCV
 class SimpleModelBase:
   def __init__(self,
                model_name=None,
-               n_jobs=4,
+               n_jobs=-1,
                verbose=10,
                cv=10,
                searcher='grid'
