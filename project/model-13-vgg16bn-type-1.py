@@ -39,7 +39,8 @@ class ModelVGG16BN(ModelBase):
         self.model = Sequential()
         self.block_no = 0
 
-        self._add_convolution_block(filters=64, layers=2)
+        self._add_convolution_block(filters=64,  layers=2)
+        self._add_convolution_block(filters=128, layers=2)
 
         self.model.add(Flatten())
 
