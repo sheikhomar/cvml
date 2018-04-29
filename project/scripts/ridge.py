@@ -12,7 +12,7 @@ class Ridge(SimpleModelBase):
 
   def _get_search_grid_params(self):
     return {
-      'alpha': [0.00001, 0.0001, 0.001, 0.01, 0.05, 0.1, 1, 3, 5, 10, 15, 20, 30, 50]
+      'alpha': np.arange(100, 1000, 10)
     }
 
 
