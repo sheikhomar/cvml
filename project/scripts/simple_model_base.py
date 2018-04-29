@@ -32,17 +32,24 @@ class SimpleModelBase:
     searcher.fit(self.X_train_val, self.y_train_val)
     self._write_results(searcher)
 
-  def predict(self):
+  def predict(self, classifier_params=None):
+    print('Predicting using {}'.format(classifier_params))
     classifier = self._get_classifier()
-    path = self._get_model_results_path()
-    if os.path.exists(path):
-      search_results = json.load(open(path))
-      classifier_params = search_results['best_params']
-      classifier.set_params(**classifier_params)
-      self._load_data()
-      classifier.fit(self.X_train_val, self.y_train_val)
-      self._write_predictions(classifier, classifier_params)
 
+    if classifier_params is None:
+      path = self._get_model_results_path()
+      if os.path.exists(path):
+        search_results = json.load(open(path))
+        classifier_params = search_results['best_params']
+
+    if classifier_params is None:
+      print('Cannot find search results file {}'.format(path))
+      return
+
+    classifier.set_params(**classifier_params)
+    self._load_data()
+    classifier.fit(self.X_train_val, self.y_train_val)
+    self._write_predictions(classifier, classifier_params)
 
   def _get_searcher(self):
     classifier = self._get_classifier()
