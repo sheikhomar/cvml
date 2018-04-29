@@ -17,4 +17,4 @@ class Ridge(SimpleModelBase):
 
 
 if __name__ == '__main__':
-  Ridge().run()
+  Ridge().predict()

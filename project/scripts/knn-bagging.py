@@ -20,4 +20,4 @@ class BaggedKNN(SimpleModelBase):
 
 
 if __name__ == '__main__':
-  BaggedKNN().run()
+  BaggedKNN().predict()
