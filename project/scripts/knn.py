@@ -1,6 +1,6 @@
 import numpy as np
 
-from sklearn.ensemble import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from simple_model_base import SimpleModelBase
 
 
@@ -18,4 +18,4 @@ class KNN(SimpleModelBase):
 
 
 if __name__ == '__main__':
-  KNN().run()
+  KNN(n_jobs=-1).run()
