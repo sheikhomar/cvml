@@ -19,4 +19,4 @@ class RidgeBagging(SimpleModelBase):
 
 
 if __name__ == '__main__':
-  RidgeBagging().run()
+  RidgeBagging().predict()
