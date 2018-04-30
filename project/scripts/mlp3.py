@@ -18,9 +18,9 @@ class MLP(SimpleModelBase):
 
   def _get_search_grid_params(self):
     return {
-      "mlp__hidden_layer_sizes": [(30,), (50,), (100,), (150,), (200,), (10,10), (20,10),],
-      "mlp__max_iter": [3, 5, 10, 15, 20, 50],
-      'mlp__alpha': [1, 5, 10, 15, 20, 30, 50, 100]
+      'mlp__activation' : ['logistic', 'tanh', 'relu'],
+      'mlp__hidden_layer_sizes': [(10,), (20,), (30,), (40,), (50,)],
+      'mlp__alpha': [0.1, 1, 5, 10, 20, 30, 50, 100]
     }
 
 
