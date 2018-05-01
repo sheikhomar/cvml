@@ -43,7 +43,7 @@ class Voter(SimpleModelBase):
 
     return VotingClassifier(
       n_jobs=-1,
-      voting='soft',
+      voting='hard',
       estimators=[
         ('rfc', rfc), 
         ('etc', etc), 
