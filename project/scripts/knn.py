@@ -11,23 +11,15 @@ class KNN(SimpleModelBase):
     SimpleModelBase.__init__(self, *args, **kwargs)
 
   def _get_classifier(self):
-    # Estimate a covariance matrix
-    covariance_matrix = np.cov(self._get_train_data())
-
-    # Create a pipeline
     return Pipeline([
       ('scaler', StandardScaler()),
-      ('knn',
-        KNeighborsClassifier(
-          metric_params={'V': covariance_matrix}
-        )
-      )
+      ('knn', KNeighborsClassifier())
     ])
 
   def _get_search_grid_params(self):
     return {
       'knn__n_neighbors': np.arange(3, 29),
-      'knn__metric': ['manhatten', 'euclidean', 'mahalanobis']
+      'knn__metric': ['manhattan', 'euclidean']
     }
 
 
