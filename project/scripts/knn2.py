@@ -12,7 +12,7 @@ class KNN(SimpleModelBase):
 
   def _get_classifier(self):
     # Estimate a covariance matrix
-    covariance_matrix = np.cov(self._get_train_data())
+    covariance_matrix = self._get_train_data().cov()
 
     # Create a pipeline
     return Pipeline([
