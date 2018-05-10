@@ -51,6 +51,9 @@ class SimpleModelBase:
     classifier.fit(self.X_train_val, self.y_train_val)
     self._write_predictions(classifier, classifier_params)
 
+  def _get_train_data(self):
+    return self.X_train_val
+
   def _get_searcher(self):
     classifier = self._get_classifier()
     param_grid = self._get_search_grid_params()
