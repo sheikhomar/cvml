@@ -1,7 +1,7 @@
 import numpy as np
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import QuantileTransformer
 from sklearn.pipeline import Pipeline
 from simple_model_base import SimpleModelBase
 
@@ -11,14 +11,11 @@ class LDA(SimpleModelBase):
     SimpleModelBase.__init__(self, *args, **kwargs)
 
   def _get_classifier(self):
-    return Pipeline([
-      ('scaler', StandardScaler()),
-      ('knn', LinearDiscriminantAnalysis(solver='lsqr'))
-    ])
+    return LinearDiscriminantAnalysis(solver='lsqr')
 
   def _get_search_grid_params(self):
     return {
-      "shrinkage": ['auto', 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+      "lda__shrinkage": ['auto', 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     }
 
 
