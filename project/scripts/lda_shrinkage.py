@@ -13,7 +13,7 @@ class LDA(SimpleModelBase):
 
   def _get_search_grid_params(self):
     return {
-      "shrinkage": ['auto', 0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+      "shrinkage": ['auto', 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
     }
 
 
