@@ -1,6 +1,8 @@
 import numpy as np
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 from simple_model_base import SimpleModelBase
 
 
@@ -9,7 +11,10 @@ class LDA(SimpleModelBase):
     SimpleModelBase.__init__(self, *args, **kwargs)
 
   def _get_classifier(self):
-    return LinearDiscriminantAnalysis(solver='lsqr')
+    return Pipeline([
+      ('scaler', StandardScaler()),
+      ('knn', LinearDiscriminantAnalysis(solver='lsqr'))
+    ])
 
   def _get_search_grid_params(self):
     return {
