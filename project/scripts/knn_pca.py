@@ -26,4 +26,8 @@ class KNN(SimpleModelBase):
 
 
 if __name__ == '__main__':
-  KNN(n_jobs=-1).run()
+  KNN(n_jobs=1).predict({
+    'knn__metric': 'manhattan',
+    'knn__n_neighbors': 18,
+    'pca__n_components': 70
+  })
