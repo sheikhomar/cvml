@@ -25,6 +25,6 @@ class KNN(SimpleModelBase):
 
 if __name__ == '__main__':
   KNN(n_jobs=-1).predict(classifier_params={
-      'n_neighbors': 16,
-      'metric': 'manhattan'
+      'knn__n_neighbors': 16,
+      'knn__metric': 'manhattan'
     })
