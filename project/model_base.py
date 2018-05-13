@@ -6,7 +6,7 @@ import h5py
 
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing import image
-from keras.callbacks import ModelCheckpoint, EarlyStopping
+from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, CSVLogger
 from keras.models import Sequential
 from keras import optimizers
 
@@ -21,6 +21,8 @@ class ModelBase:
                  n_freeze_layers=0,
                  learning_rate=0.00001,
                  epochs=400,
+                 preprocessor=None,
+                 optimizer=None
                  ):
         if model_name is None:
             script_name, script_ext = os.path.splitext(sys.argv[0])
@@ -45,15 +47,26 @@ class ModelBase:
         self.learning_rate = learning_rate
         self.imagenet_weights_url = None
         self.imagenet_use_id = False
+        self.preprocessor = preprocessor
+
+        self.optimizer = optimizer
+        if self.optimizer is not None and self.learning_rate is not None:
+            raise Exception('Optimizer and learning cannot be set at the same time.')
+        if self.learning_rate is None:
+            self.learning_rate = 1e-3
+        if self.optimizer is None:
+            self.optimizer = optimizers.Adam(lr=self.learning_rate)
 
     def load_model(self, model_weights=None):
         print('Creating model...')
         self._create()
+
         print('Loading weights from {}...'.format(model_weights))
         self.model.load_weights(model_weights)
-        print('Compiling...')
+
+        print('Compiling using optimizer: %s...' % self.optimizer)
         self.model.compile(
-            optimizers.Adam(lr=self.learning_rate),
+            self.optimizer,
             loss='categorical_crossentropy',
             metrics=['accuracy']
         )
@@ -68,9 +81,9 @@ class ModelBase:
         print('Loading weights...')
         self._load_pretrained_weights()
 
-        print('Compiling...')
+        print('Compiling using optimizer: %s...' % self.optimizer)
         self.model.compile(
-            optimizers.Adam(lr=self.learning_rate),
+            self.optimizer,
             loss='categorical_crossentropy',
             metrics=['accuracy']
         )
@@ -99,6 +112,14 @@ class ModelBase:
     def predict_test(self, model_weights):
         img_paths = self._get_test_image_paths()
         return self._predict(model_weights, img_paths)
+
+    def predict_instance_validation(self, model_weights):
+        img_paths = self._get_validation_image_paths()
+        return self._predict_instance(model_weights, img_paths)
+
+    def predict_instance_test(self, model_weights):
+        img_paths = self._get_test_image_paths()
+        return self._predict_instance(model_weights, img_paths)
 
     @staticmethod
     def write_predictions(predictions, file_name='predictions.csv'):
@@ -136,6 +157,52 @@ class ModelBase:
 
         return y_predictions
 
+    def _predict_instance(self, model_weights, img_paths):
+        print('Instance-based predictions...')
+        self.load_model(model_weights)
+
+        # Sort image paths in-place
+        img_paths.sort(key=lambda tup: tup[0])
+
+        # Group images so they come in pairs
+        instance_pairs = list(zip(*[iter(img_paths)] * 2))
+
+        label_map = self._get_label_map()
+        img_count = len(img_paths)
+        y_predictions = np.zeros(img_count, dtype=np.int8)
+
+        for i, ((img1_num, img1_path), (img2_num, img2_path)) in enumerate(instance_pairs):
+            ModelBase.show_progress_bar(i, img_count)
+
+            img1_data = self._load_image(img1_path)
+            img2_data = self._load_image(img2_path)
+            img1_pred = self.model.predict(img1_data)
+            img2_pred = self.model.predict(img2_data)
+
+            img1_pred_index = np.argmax(img1_pred, axis=1)[0]
+            img2_pred_index = np.argmax(img2_pred, axis=1)[0]
+
+            if img1_pred_index != img2_pred_index:
+                img1_highest_score = np.max(img1_pred, axis=1)[0]
+                img2_highest_score = np.max(img2_pred, axis=1)[0]
+
+                # if class labels for different views differ,
+                # we assign to the instance the class label
+                # with the highest confidence score.
+                if img1_highest_score > img2_highest_score:
+                    img2_pred_index = img1_pred_index
+                else:
+                    img1_pred_index = img2_pred_index
+
+            img1_pred_label = label_map[img1_pred_index]
+            img2_pred_label = label_map[img2_pred_index]
+
+            y_predictions[img1_num - 1] = img1_pred_label
+            y_predictions[img2_num - 1] = img2_pred_label
+
+        print('\n ... predictions done')
+        return y_predictions
+
     def _get_label_map(self):
         # We need the ImageDataGenerator used to train the model
         # because it contains a mapping between classes and indices
@@ -150,7 +217,7 @@ class ModelBase:
         img = image.load_img(image_path, target_size=(self.img_width, self.img_height))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
-        return x
+        return self._preprocess_input(x)
 
     def _get_test_image_paths(self):
         final_list = []
@@ -171,7 +238,9 @@ class ModelBase:
         return final_list
 
     def _get_validation_generator(self):
-        return ImageDataGenerator().flow_from_directory(
+        return ImageDataGenerator(
+            preprocessing_function=self.preprocessor
+        ).flow_from_directory(
             self.validation_data_dir,
             target_size=(self.img_height, self.img_width),
             batch_size=self.batch_size,
@@ -179,7 +248,9 @@ class ModelBase:
         )
 
     def _get_train_generator(self):
-        return ImageDataGenerator().flow_from_directory(
+        return ImageDataGenerator(
+            preprocessing_function=self.preprocessor
+        ).flow_from_directory(
             self.train_data_dir,
             target_size=(self.img_height, self.img_width),
             batch_size=self.batch_size,
@@ -219,10 +290,10 @@ class ModelBase:
     def _get_callbacks(self):
         # Define model checkpoint
         checkpoint = ModelCheckpoint(
-            'saved_weights/%s-epoch{epoch:02d}-acc{acc:.2f}-loss{loss:.2f}'
-            '-valacc{val_acc:.2f}-valloss{val_loss:.2f}.hdf5' % self.model_name,
+            'saved_weights/%s-epoch{epoch:02d}-acc{acc:.4f}-loss{loss:.4f}'
+            '-valacc{val_acc:.4f}-valloss{val_loss:.4f}.hdf5' % self.model_name,
             monitor='val_acc',
-            save_best_only=False,
+            save_best_only=True,
             save_weights_only=True,
             mode='auto',
             period=1,
@@ -238,7 +309,18 @@ class ModelBase:
             verbose=self.verbose
         )
 
-        return [checkpoint, early_stop]
+        # Reduce learning rate on plateau
+        reduce_lr = ReduceLROnPlateau(
+            monitor='val_loss',
+            factor=0.2,
+            patience=5,
+            min_lr=1e-5
+        )
+
+        # Log epoch history
+        logger = CSVLogger('logs/%s.csv' % self.model_name)
+
+        return [checkpoint, early_stop, reduce_lr, logger]
 
     def _find_saved_weights(self, models_dir='./saved_weights/'):
         if not os.path.isdir(models_dir):
@@ -283,3 +365,7 @@ class ModelBase:
                     layer_index = layer_indices[layer_key]
                 self.model.layers[layer_index].set_weights(transferred_weights)
         print('Done loading weights')
+
+    def _preprocess_input(self, x):
+        if self.preprocessor is not None:
+            self.preprocessor(x)
