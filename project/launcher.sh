@@ -8,6 +8,7 @@ if [ -z "$1" ]
 fi
 
 echo Starting $1
+source activate cvml
 python $1
 echo Script $1 ended
 
