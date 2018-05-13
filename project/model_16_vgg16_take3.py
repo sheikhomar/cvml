@@ -5,6 +5,11 @@ from keras import optimizers
 from keras.models import Sequential
 from keras.models import Model
 from keras.layers import Dropout, Flatten, Dense, MaxPooling2D
+from keras.applications.imagenet_utils import preprocess_input
+
+
+def preprocessor(x):
+    return preprocess_input(x)
 
 
 class ModelVGG16Take3(ModelBase):
@@ -27,7 +32,7 @@ class ModelVGG16Take3(ModelBase):
         x = Dense(4096, activation='relu')(x)
         x = Dropout(0.5)(x)
         x = Dense(self.n_labels, activation='softmax')(x)
-        
+
         self.model = Model(inputs=base_model.input, outputs=x)
 
 
@@ -36,5 +41,6 @@ if __name__ == '__main__':
         learning_rate=None,
         optimizer=optimizers.SGD(momentum=0.9),
         batch_size=64,
+        preprocessor=preprocessor,
         verbose=10
     ).train()
