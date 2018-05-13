@@ -318,7 +318,10 @@ class ModelBase:
         )
 
         # Log epoch history
-        logger = CSVLogger('logs/%s.csv' % self.model_name)
+        logger = CSVLogger(
+            filename='logs/%s.csv' % self.model_name,
+            append=True
+        )
 
         return [checkpoint, early_stop, reduce_lr, logger]
 
