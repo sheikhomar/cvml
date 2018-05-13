@@ -2,14 +2,16 @@ from model_base import ModelBase
 
 from keras import applications
 from keras import optimizers
-from keras.models import Sequential
 from keras.models import Model
 from keras.layers import Dropout, Flatten, Dense, MaxPooling2D
-from keras.applications.imagenet_utils import preprocess_input
 
 
-def preprocessor(x):
-    return preprocess_input(x)
+vgg_mean = np.array([123.68, 116.779, 103.939], dtype=np.float32).reshape((3,1,1))
+
+
+def vgg_preprocess(x):
+    x = x - vgg_mean
+    return x[:, ::-1] # reverse axis rgb->bgr
 
 
 class ModelVGG16Take3(ModelBase):
@@ -41,6 +43,6 @@ if __name__ == '__main__':
         learning_rate=None,
         optimizer=optimizers.SGD(momentum=0.9),
         batch_size=64,
-        preprocessor=preprocessor,
+        preprocessor=vgg_preprocess,
         verbose=10
     ).train()
