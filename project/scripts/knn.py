@@ -11,14 +11,11 @@ class KNN(SimpleModelBase):
     SimpleModelBase.__init__(self, *args, **kwargs)
 
   def _get_classifier(self):
-    return Pipeline([
-      ('scaler', StandardScaler()),
-      ('knn', KNeighborsClassifier())
-    ])
+    return KNeighborsClassifier()
 
   def _get_search_grid_params(self):
     return {
-      'knn__n_neighbors': np.arange(3, 29),
+      'knn__n_neighbors': np.arange(2, 40),
       'knn__metric': ['manhattan', 'euclidean']
     }
 
