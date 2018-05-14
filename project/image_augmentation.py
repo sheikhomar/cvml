@@ -28,7 +28,7 @@ class ImageAugmentation:
                     print(' Deleting {}'.format(file_path))
                     os.remove(file_path)
 
-    def run(self, folder, class_size=2000, random_seed=42):
+    def run(self, folder, class_size=2500, random_seed=42):
         gen = self._get_generator()
         class_dirs = os.listdir(folder)
         print('Augmenting images in {}'.format(folder))
