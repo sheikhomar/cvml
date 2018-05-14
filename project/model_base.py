@@ -105,19 +105,19 @@ class ModelBase:
             verbose=self.verbose
         )
 
-    def predict_validation(self, model_weights):
+    def predict_validation(self, model_weights=None):
         img_paths = self._get_validation_image_paths()
         return self._predict(model_weights, img_paths)
 
-    def predict_test(self, model_weights):
+    def predict_test(self, model_weights=None):
         img_paths = self._get_test_image_paths()
         return self._predict(model_weights, img_paths)
 
-    def predict_instance_validation(self, model_weights):
+    def predict_instance_validation(self, model_weights=None):
         img_paths = self._get_validation_image_paths()
         return self._predict_instance(model_weights, img_paths)
 
-    def predict_instance_test(self, model_weights):
+    def predict_instance_test(self, model_weights=None):
         img_paths = self._get_test_image_paths()
         return self._predict_instance(model_weights, img_paths)
 
@@ -138,6 +138,11 @@ class ModelBase:
         sys.stdout.flush()
 
     def _predict(self, model_weights, img_paths):
+        if model_weights is None:
+            model_weights = self._find_saved_weights()
+        if model_weights is None:
+            raise Exception('Please provide a path to the model weights to use!')
+
         self.load_model(model_weights)
 
         label_map = self._get_label_map()
@@ -158,6 +163,11 @@ class ModelBase:
         return y_predictions
 
     def _predict_instance(self, model_weights, img_paths):
+        if model_weights is None:
+            model_weights = self._find_saved_weights()
+        if model_weights is None:
+            raise Exception('Please provide a path to the model weights to use!')
+
         print('Instance-based predictions...')
         self.load_model(model_weights)
 
@@ -217,7 +227,9 @@ class ModelBase:
         img = image.load_img(image_path, target_size=(self.img_width, self.img_height))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
-        return self._preprocess_input(x)
+        if self.preprocessor is None:
+            return x
+        return self.preprocessor(x)
 
     def _get_test_image_paths(self):
         final_list = []
